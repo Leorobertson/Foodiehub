@@ -73,7 +73,7 @@ export default function MenuPreview({ menuData }: MenuPreviewProps) {
             {items.map((item, index) => (
               <Card key={index}>
                 <CardContent className="p-4 flex items-center space-x-4">
-                  {item.photo ? (
+                  {item.mediaType === 'image' && item.photo ? (
                     <div className={`overflow-hidden flex-shrink-0 
                       menu-shape-${photoShape} 
                       menu-size-${photoSize}`}
@@ -81,6 +81,20 @@ export default function MenuPreview({ menuData }: MenuPreviewProps) {
                       <img 
                         src={item.photo} 
                         alt={item.name} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : item.mediaType === 'video' && item.video ? (
+                    <div className={`overflow-hidden flex-shrink-0 
+                      menu-shape-${photoShape} 
+                      menu-size-${photoSize}`}
+                    >
+                      <video 
+                        src={item.video}
+                        loop
+                        muted
+                        autoPlay
+                        playsInline
                         className="w-full h-full object-cover"
                       />
                     </div>

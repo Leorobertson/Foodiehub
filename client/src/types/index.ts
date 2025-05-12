@@ -3,6 +3,8 @@ export interface MenuItem {
   name: string;
   price: string;
   photo: string;
+  video?: string;
+  mediaType?: 'image' | 'video';
 }
 
 export interface MenuData {
@@ -13,6 +15,13 @@ export interface MenuData {
   photoSize: 'small' | 'medium' | 'large';
   photoShape: 'square' | 'rounded' | 'circle';
   backgroundColor: string;
+}
+
+// Media Types
+export interface MediaItem {
+  url: string;
+  type: 'image' | 'video';
+  thumbnailUrl?: string;
 }
 
 // Recipe Types

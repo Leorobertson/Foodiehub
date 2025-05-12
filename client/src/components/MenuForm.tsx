@@ -21,8 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { X, PlusCircle, Image } from "lucide-react";
+import { X, PlusCircle, Image, Video, Camera } from "lucide-react";
 import { MenuData, MenuItem } from "../types";
+import MediaCaptureModal from "./MediaCaptureModal";
 
 interface MenuFormProps {
   menuData: MenuData;
@@ -46,6 +47,9 @@ export default function MenuForm({
     price: "",
     photo: ""
   });
+  const [mediaCaptureModalOpen, setMediaCaptureModalOpen] = useState(false);
+  const [currentItemIndex, setCurrentItemIndex] = useState<number | null>(null);
+  const [captureTarget, setCaptureTarget] = useState<'logo' | 'itemPhoto'>('itemPhoto');
 
   const handleNewItemChange = (field: keyof MenuItem, value: string) => {
     setNewItem(prev => ({ ...prev, [field]: value }));
@@ -55,7 +59,7 @@ export default function MenuForm({
     e.preventDefault();
     if (newItem.name && newItem.price) {
       onMenuItemAdd(newItem);
-      setNewItem({ name: "", price: "", photo: "" });
+      setNewItem({ name: "", price: "", photo: "", video: "", mediaType: undefined });
     }
   };
 
@@ -69,16 +73,64 @@ export default function MenuForm({
         onBusinessInfoChange('logo', reader.result as string);
       } else if (field === 'itemPhoto' && itemIndex === undefined) {
         handleNewItemChange('photo', reader.result as string);
+        handleNewItemChange('mediaType', 'image');
       } else if (field === 'itemPhoto' && itemIndex !== undefined) {
-        const updatedItem = { ...menuData.items[itemIndex], photo: reader.result as string };
+        const updatedItem = { 
+          ...menuData.items[itemIndex], 
+          photo: reader.result as string,
+          mediaType: 'image' 
+        };
         onMenuItemUpdate(itemIndex, updatedItem);
       }
     };
     reader.readAsDataURL(file);
   };
 
+  const openMediaCapture = (field: 'logo' | 'itemPhoto', itemIndex?: number) => {
+    setCaptureTarget(field);
+    setCurrentItemIndex(itemIndex !== undefined ? itemIndex : null);
+    setMediaCaptureModalOpen(true);
+  };
+
+  const handleMediaCaptured = (mediaUrl: string, mediaType: 'image' | 'video') => {
+    if (captureTarget === 'logo') {
+      onBusinessInfoChange('logo', mediaUrl);
+    } else if (captureTarget === 'itemPhoto') {
+      if (currentItemIndex === null) {
+        // For new item
+        if (mediaType === 'image') {
+          handleNewItemChange('photo', mediaUrl);
+          handleNewItemChange('video', '');
+        } else {
+          handleNewItemChange('video', mediaUrl);
+          handleNewItemChange('photo', '');
+        }
+        handleNewItemChange('mediaType', mediaType);
+      } else {
+        // For existing item
+        const updatedItem = { ...menuData.items[currentItemIndex] };
+        
+        if (mediaType === 'image') {
+          updatedItem.photo = mediaUrl;
+          updatedItem.video = '';
+        } else {
+          updatedItem.video = mediaUrl;
+          updatedItem.photo = '';
+        }
+        updatedItem.mediaType = mediaType;
+        
+        onMenuItemUpdate(currentItemIndex, updatedItem);
+      }
+    }
+  };
+
   return (
     <div className="space-y-8">
+      <MediaCaptureModal
+        isOpen={mediaCaptureModalOpen}
+        onClose={() => setMediaCaptureModalOpen(false)}
+        onMediaCaptured={handleMediaCaptured}
+      />
       {/* Business Information */}
       <Card>
         <CardContent className="pt-6">
@@ -124,13 +176,27 @@ export default function MenuForm({
                     </div>
                   )}
                 </div>
-                <FormControl>
-                  <Input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, 'logo')}
-                  />
-                </FormControl>
+                <div className="space-y-2 flex-grow">
+                  <FormControl>
+                    <Input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, 'logo')}
+                    />
+                  </FormControl>
+                  <div className="flex space-x-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => openMediaCapture('logo')}
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Take Photo
+                    </Button>
+                  </div>
+                </div>
               </div>
             </FormItem>
           </div>
@@ -179,9 +245,9 @@ export default function MenuForm({
                     </FormItem>
                     
                     <FormItem>
-                      <FormLabel>Photo</FormLabel>
+                      <FormLabel>Media</FormLabel>
                       <div className="flex items-center space-x-2">
-                        {item.photo && (
+                        {item.mediaType === 'image' && item.photo ? (
                           <div className="w-10 h-10 rounded-md overflow-hidden">
                             <img 
                               src={item.photo} 
@@ -189,14 +255,34 @@ export default function MenuForm({
                               className="w-full h-full object-cover"
                             />
                           </div>
+                        ) : item.mediaType === 'video' && item.video ? (
+                          <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <Video className="h-5 w-5 text-primary" />
+                          </div>
+                        ) : (
+                          <div className="w-10 h-10 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+                            <Image className="h-5 w-5 text-gray-400" />
+                          </div>
                         )}
-                        <FormControl>
-                          <Input 
-                            type="file" 
-                            accept="image/*"
-                            onChange={(e) => handleFileUpload(e, 'itemPhoto', index)}
-                          />
-                        </FormControl>
+                        <div className="flex-1 space-y-2">
+                          <FormControl>
+                            <Input 
+                              type="file" 
+                              accept="image/*"
+                              onChange={(e) => handleFileUpload(e, 'itemPhoto', index)}
+                            />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => openMediaCapture('itemPhoto', index)}
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Capture Media
+                          </Button>
+                        </div>
                       </div>
                     </FormItem>
                   </div>
@@ -233,14 +319,26 @@ export default function MenuForm({
               </FormItem>
               
               <FormItem>
-                <FormLabel>Photo</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="file" 
-                    accept="image/*"
-                    onChange={(e) => handleFileUpload(e, 'itemPhoto')}
-                  />
-                </FormControl>
+                <FormLabel>Media</FormLabel>
+                <div className="space-y-2">
+                  <FormControl>
+                    <Input 
+                      type="file" 
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, 'itemPhoto')}
+                    />
+                  </FormControl>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => openMediaCapture('itemPhoto')}
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Capture Media
+                  </Button>
+                </div>
               </FormItem>
             </div>
             
