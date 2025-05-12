@@ -73,12 +73,12 @@ export default function MenuForm({
         onBusinessInfoChange('logo', reader.result as string);
       } else if (field === 'itemPhoto' && itemIndex === undefined) {
         handleNewItemChange('photo', reader.result as string);
-        handleNewItemChange('mediaType', 'image');
+        handleNewItemChange('mediaType', 'image' as 'image' | 'video');
       } else if (field === 'itemPhoto' && itemIndex !== undefined) {
         const updatedItem = { 
           ...menuData.items[itemIndex], 
           photo: reader.result as string,
-          mediaType: 'image' 
+          mediaType: 'image' as 'image' | 'video'
         };
         onMenuItemUpdate(itemIndex, updatedItem);
       }
@@ -108,7 +108,7 @@ export default function MenuForm({
         handleNewItemChange('mediaType', mediaType);
       } else {
         // For existing item
-        const updatedItem = { ...menuData.items[currentItemIndex] };
+        const updatedItem = { ...menuData.items[currentItemIndex] } as MenuItem;
         
         if (mediaType === 'image') {
           updatedItem.photo = mediaUrl;
