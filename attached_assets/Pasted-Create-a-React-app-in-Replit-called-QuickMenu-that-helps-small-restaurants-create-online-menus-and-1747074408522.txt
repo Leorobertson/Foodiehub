@@ -1,0 +1,84 @@
+Create a React app in Replit called "QuickMenu" that helps small restaurants create online menus and includes a food community platform for sharing recipes and recommending restaurants. The app should be beginner-friendly, use Tailwind CSS for styling, and be deployable to Vercel. Follow these detailed requirements:
+
+1. **Core Menu-Building Feature**:
+   - Allow restaurants to create a digital menu with:
+     - Business name (text input).
+     - Address (text input, e.g., "123 Stockbridge Rd, Edinburgh").
+     - Logo upload (image file input).
+     - Menu items (dynamic list), each with:
+       - Item name (text input).
+       - Price (text input, e.g., "£5.99").
+       - Photo upload (image file input).
+     - Customization options:
+       - Photo size (dropdown: small, medium, large).
+       - Photo shape (dropdown: square, rounded, circle).
+       - Background color (color picker).
+   - Display a live preview of the menu, showing the business name, address, logo, and menu items with photos, styled according to customization choices.
+   - Include a "Generate Menu Page" button that shows an alert with a fake URL (e.g., "quickmenu.co/businessname").
+   - Add a QR code generator: Restaurants can download a QR code linking to their menu (use a library like `qrcode.react`).
+
+2. **Recipe Sharing Feature**:
+   - Create a separate section called "Recipes" where users (restaurants or foodies) can post recipes.
+   - Each recipe includes:
+     - Title (text input).
+     - Description (textarea).
+     - Ingredients (dynamic list of text inputs).
+     - Instructions (textarea).
+     - Category (dropdown: High Protein, Sugarbomb, Low Carb, Weight Loss).
+     - Photo upload (image file input).
+   - Display recipes in a grid, grouped by category (tabs or filters for High Protein, Sugarbomb, Low Carb, Weight Loss).
+   - Allow users to like recipes (increment a counter; store in-memory for now).
+
+3. **Restaurant Recommendations Feature**:
+   - Create a section called "Recommendations" where users can submit restaurant recommendations.
+   - Each recommendation includes:
+     - Restaurant name (text input).
+     - Address (text input).
+     - Review (textarea, 50–200 words).
+     - Rating (dropdown: 1–5 stars).
+   - Display recommendations in a list, sorted by rating (highest first).
+   - Allow users to like recommendations (increment a counter; in-memory).
+
+4. **Community Feed**:
+   - Add a "Community" section showing a feed of recent recipes and recommendations (mixed together, sorted by date).
+   - Each feed item shows:
+     - Type (Recipe or Recommendation).
+     - Title/name, photo (if available), and a short preview (e.g., first 50 characters of description/review).
+     - Like button and like count.
+   - Allow users to comment on feed items (text input; store comments in-memory).
+
+5. **Social Media Integration**:
+   - Add a footer with links to Instagram and TikTok (@QuickMenuApp) to promote the #QuickMenuChallenge.
+   - Include buttons to share menus, recipes, or recommendations to Instagram/TikTok (open a share URL or copy a link to clipboard).
+   - Add a pinned banner in the Community section encouraging users to join the #QuickMenuChallenge by posting their menu or recipe with the hashtag.
+
+6. **Technical Requirements**:
+   - Use React (functional components, hooks like useState for state management).
+   - Style with Tailwind CSS (install tailwindcss, postcss, autoprefixer).
+   - Initialize Tailwind with `npx tailwindcss init -p` and configure `tailwind.config.js` to scan `src/**/*.{js,jsx}`.
+   - Store data in-memory (use useState; no backend yet).
+   - Use `qrcode.react` for QR codes (install via npm).
+   - Ensure the app is responsive (mobile-friendly) using Tailwind’s utility classes.
+   - Structure the app with:
+     - `src/App.js`: Main component with navigation (Home, Recipes, Recommendations, Community).
+     - `src/index.css`: Tailwind directives (@tailwind base, components, utilities).
+     - `public/index.html`: Basic HTML with title "QuickMenu".
+     - `src/index.js`: Standard React entry point.
+   - Avoid external APIs or backend dependencies to keep it simple.
+
+7. **Setup Instructions**:
+   - Start with Replit’s React template to avoid create-react-app conflicts.
+   - Install dependencies: `npm install tailwindcss@latest postcss@latest autoprefixer@latest qrcode.react`.
+   - Run `npx tailwindcss init -p` to create `tailwind.config.js` and `postcss.config.js`.
+   - If Tailwind fails, run `npm cache clean --force` and reinstall.
+   - Provide a `README.md` with instructions to run the app (`npm start`) and deploy to Vercel.
+
+8. **Deployment**:
+   - Ensure the app can be pushed to a GitHub repository for Vercel deployment.
+   - Provide a terminal command sequence to initialize Git, commit, and push:
+     ```bash
+     git init
+     git add .
+     git commit -m "QuickMenu with recipes and recommendations"
+     git remote add origin https://github.com/username/quickmenu.git
+     git push -u origin main
