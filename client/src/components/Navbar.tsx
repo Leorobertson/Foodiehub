@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Utensils, Menu, X, Home, Video, Heart, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const [location] = useLocation();
