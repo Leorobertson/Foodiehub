@@ -13,8 +13,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import CommentsDrawer from "@/components/CommentsDrawer";
 
 // Define the video post interface
+interface Comment {
+  id: string;
+  author: string;
+  authorAvatar: string;
+  text: string;
+  date: string;
+  likes: number;
+  isLiked: boolean;
+}
+
 interface VideoPost {
   id: string;
   videoUrl: string;
@@ -24,7 +36,7 @@ interface VideoPost {
   description: string;
   tags: string[];
   likes: number;
-  comments: number;
+  comments: Comment[];
   shares: number;
   isFollowing: boolean;
   isLiked?: boolean;
@@ -41,7 +53,26 @@ const sampleVideos: VideoPost[] = [
     description: "Homemade pizza with special tomato sauce and fresh mozzarella! #pizza #homemade #cooking",
     tags: ["pizza", "homemade", "cooking"],
     likes: 1254,
-    comments: 42,
+    comments: [
+      {
+        id: "c1",
+        author: "pizzalover",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=pizzalover",
+        text: "I'm definitely trying this recipe this weekend!",
+        date: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+        likes: 24,
+        isLiked: false
+      },
+      {
+        id: "c2",
+        author: "homebakerxyz",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=homebakerxyz",
+        text: "What temperature do you cook the pizza at?",
+        date: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+        likes: 5,
+        isLiked: true
+      }
+    ],
     shares: 21,
     isFollowing: false,
     isLiked: false
@@ -55,7 +86,17 @@ const sampleVideos: VideoPost[] = [
     description: "Quick and easy pasta recipe that will impress your friends! #pasta #quickmeals #dinner",
     tags: ["pasta", "quickmeals", "dinner"],
     likes: 867,
-    comments: 31,
+    comments: [
+      {
+        id: "c3",
+        author: "pastaenthusiast",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=pastaenthusiast",
+        text: "This looks amazing! What sauce did you use?",
+        date: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+        likes: 12,
+        isLiked: false
+      }
+    ],
     shares: 15,
     isFollowing: true,
     isLiked: true
@@ -69,7 +110,35 @@ const sampleVideos: VideoPost[] = [
     description: "Morning breakfast ideas that are healthy and delicious! #breakfast #healthy #foodie",
     tags: ["breakfast", "healthy", "foodie"],
     likes: 1532,
-    comments: 67,
+    comments: [
+      {
+        id: "c4",
+        author: "healthyeater",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=healthyeater",
+        text: "I make something similar! Try adding some chia seeds for extra protein.",
+        date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+        likes: 31,
+        isLiked: true
+      },
+      {
+        id: "c5",
+        author: "earlybird",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=earlybird",
+        text: "How long does this take to prepare? I'm always short on time in the mornings.",
+        date: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
+        likes: 8,
+        isLiked: false
+      },
+      {
+        id: "c6",
+        author: "nutritionguru",
+        authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=nutritionguru",
+        text: "Perfect macros for starting the day! Saved!",
+        date: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
+        likes: 15,
+        isLiked: false
+      }
+    ],
     shares: 42,
     isFollowing: false,
     isLiked: false
@@ -77,9 +146,12 @@ const sampleVideos: VideoPost[] = [
 ];
 
 export default function VideoFeed() {
+  const { toast } = useToast();
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [videos, setVideos] = useState<VideoPost[]>(sampleVideos);
   const [isMuted, setIsMuted] = useState(true);
+  const [commentsOpen, setCommentsOpen] = useState(false);
+  const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const handleScroll = (direction: 'up' | 'down') => {
@@ -130,8 +202,83 @@ export default function VideoFeed() {
       return video;
     }));
   };
+  
+  const handleOpenComments = (videoId: string) => {
+    setCurrentVideoId(videoId);
+    setCommentsOpen(true);
+    
+    // Pause the current video when comments are opened
+    const currentVideo = videoRefs.current[currentVideoIndex];
+    if (currentVideo) {
+      currentVideo.pause();
+    }
+  };
+  
+  const handleCloseComments = () => {
+    setCommentsOpen(false);
+    setCurrentVideoId(null);
+    
+    // Resume playing the current video when comments are closed
+    const currentVideo = videoRefs.current[currentVideoIndex];
+    if (currentVideo) {
+      currentVideo.play().catch(err => console.error('Error playing video:', err));
+    }
+  };
+  
+  const handleAddComment = (text: string) => {
+    if (!currentVideoId) return;
+    
+    const newComment = {
+      id: `c${Date.now()}`,
+      author: "you",
+      authorAvatar: "https://api.dicebear.com/7.x/adventurer/svg?seed=current-user",
+      text,
+      date: new Date().toISOString(),
+      likes: 0,
+      isLiked: false
+    };
+    
+    setVideos(videos.map(video => {
+      if (video.id === currentVideoId) {
+        return {
+          ...video,
+          comments: [newComment, ...video.comments]
+        };
+      }
+      return video;
+    }));
+  };
+  
+  const handleLikeComment = (commentId: string) => {
+    if (!currentVideoId) return;
+    
+    setVideos(videos.map(video => {
+      if (video.id === currentVideoId) {
+        return {
+          ...video,
+          comments: video.comments.map(comment => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                likes: comment.isLiked ? comment.likes - 1 : comment.likes + 1,
+                isLiked: !comment.isLiked
+              };
+            }
+            return comment;
+          })
+        };
+      }
+      return video;
+    }));
+  };
 
-  const formatNumber = (num: number): string => {
+  const formatNumber = (num: number | { length: number }): string => {
+    // If the input is an array-like object with length property, use its length
+    if (typeof num === 'object' && num !== null && 'length' in num) {
+      num = num.length;
+    }
+    
+    // Now num is definitely a number
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
@@ -142,6 +289,17 @@ export default function VideoFeed() {
 
   return (
     <div className="h-[calc(100vh-4rem)] w-full bg-black overflow-hidden relative">
+      {/* Comments Drawer */}
+      {currentVideoId && (
+        <CommentsDrawer
+          isOpen={commentsOpen}
+          onClose={handleCloseComments}
+          videoId={currentVideoId}
+          comments={videos.find(v => v.id === currentVideoId)?.comments || []}
+          onAddComment={handleAddComment}
+          onLikeComment={handleLikeComment}
+        />
+      )}
       {/* Navigation controls */}
       <div className="absolute top-1/2 right-4 z-10 transform -translate-y-1/2 space-y-4">
         <Button 
@@ -226,9 +384,12 @@ export default function VideoFeed() {
                     <Heart className={`h-6 w-6 ${video.isLiked ? "fill-red-500 text-red-500" : ""}`} />
                     <div className="text-xs mt-1">{formatNumber(video.likes)}</div>
                   </button>
-                  <button className="p-2 rounded-full bg-black/30 text-white hover:bg-black/50">
+                  <button 
+                    className="p-2 rounded-full bg-black/30 text-white hover:bg-black/50"
+                    onClick={() => handleOpenComments(video.id)}
+                  >
                     <MessageCircle className="h-6 w-6" />
-                    <div className="text-xs mt-1">{formatNumber(video.comments)}</div>
+                    <div className="text-xs mt-1">{formatNumber(video.comments.length)}</div>
                   </button>
                   <button className="p-2 rounded-full bg-black/30 text-white hover:bg-black/50">
                     <Share2 className="h-6 w-6" />
