@@ -56,7 +56,7 @@ export default function Navbar() {
               className="hidden md:flex"
               asChild
             >
-              <Link href="/menu-builder">
+              <Link href="/upload">
                 <div className="flex items-center space-x-1">
                   <span>+</span>
                   <span>Upload</span>
@@ -111,7 +111,7 @@ export default function Navbar() {
                 className="w-full"
                 asChild
               >
-                <Link href="/menu-builder">
+                <Link href="/upload">
                   <div className="flex items-center justify-center space-x-1">
                     <span>+</span>
                     <span>Upload</span>

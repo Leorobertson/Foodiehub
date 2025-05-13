@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import VideoFeed from "./pages/VideoFeed";
+import UploadVideo from "./pages/UploadVideo";
 import MenuBuilder from "./pages/MenuBuilder";
 import Recipes from "./pages/Recipes";
 import Recommendations from "./pages/Recommendations";
@@ -18,6 +19,7 @@ function Router() {
     <Switch>
       <Route path="/" component={VideoFeed} />
       <Route path="/home" component={Home} />
+      <Route path="/upload" component={UploadVideo} />
       <Route path="/menu-builder" component={MenuBuilder} />
       <Route path="/recipes" component={Recipes} />
       <Route path="/recommendations" component={Recommendations} />
