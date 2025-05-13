@@ -34,18 +34,18 @@ export default function Navbar() {
           <div className="hidden md:flex md:items-center md:justify-center flex-1">
             <div className="flex space-x-12">
               {navLinks.map((link) => (
-                <Link key={link.name} href={link.path}>
-                  <a
-                    className={`flex flex-col items-center transition-colors ${
-                      location === link.path
-                        ? "text-primary"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}
-                  >
-                    <div>{link.icon}</div>
-                    <span className="text-xs mt-1 font-medium">{link.name}</span>
-                  </a>
-                </Link>
+                <div 
+                  key={link.name}
+                  onClick={() => window.location.href = link.path}
+                  className={`flex flex-col items-center transition-colors cursor-pointer ${
+                    location === link.path
+                      ? "text-primary"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  <div>{link.icon}</div>
+                  <span className="text-xs mt-1 font-medium">{link.name}</span>
+                </div>
               ))}
             </div>
           </div>
@@ -65,12 +65,13 @@ export default function Navbar() {
               </Link>
             </Button>
             
-            <Link href="/profile/masterchef">
-              <Avatar className="h-8 w-8 cursor-pointer">
-                <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=user1" />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-            </Link>
+            <Avatar 
+              className="h-8 w-8 cursor-pointer" 
+              onClick={() => window.location.href = "/profile/masterchef"}
+            >
+              <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=user1" />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
             
             {/* Mobile menu button */}
             <div className="md:hidden">

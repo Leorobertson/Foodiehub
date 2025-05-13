@@ -12,10 +12,29 @@ import { useToast } from "@/hooks/use-toast";
 export default function MenuBuilder() {
   const { toast } = useToast();
   const [menuData, setMenuData] = useState<MenuData>({
-    businessName: "",
-    address: "",
-    logo: "",
-    items: [],
+    businessName: "Tasty Bites",
+    address: "123 Culinary Lane, Foodie City",
+    logo: "https://api.dicebear.com/7.x/initials/svg?seed=TB&backgroundColor=FF5722",
+    items: [
+      {
+        name: "Classic Burger",
+        price: "9.99",
+        photo: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        mediaType: "image"
+      },
+      {
+        name: "Margherita Pizza",
+        price: "12.99",
+        photo: "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        mediaType: "image"
+      },
+      {
+        name: "Caesar Salad",
+        price: "7.99",
+        photo: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80",
+        mediaType: "image"
+      }
+    ],
     photoSize: "medium",
     photoShape: "rounded",
     backgroundColor: "#ffffff"

@@ -4,7 +4,7 @@ import {
   Recommendation,
   RecipeCategory
 } from "../types";
-import { v4 as uuidv4 } from "https://esm.sh/uuid";
+import { v4 as uuidv4 } from "uuid";
 
 interface DataContextType {
   recipes: Recipe[];
