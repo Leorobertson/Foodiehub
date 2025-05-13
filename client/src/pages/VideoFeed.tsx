@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "wouter";
 import { 
   Heart, 
   MessageCircle, 
@@ -344,14 +345,16 @@ export default function VideoFeed() {
               <div className="flex justify-between items-end">
                 <div className="text-white max-w-[80%]">
                   <div className="flex items-center space-x-2 mb-2">
-                    <Avatar className="h-10 w-10 border-2 border-white">
-                      <AvatarImage src={video.userAvatar} />
-                      <AvatarFallback>{video.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-bold">{video.username}</div>
-                      <div className="text-sm opacity-80">Chef & Food Creator</div>
-                    </div>
+                    <Link href={`/profile/${video.username}`} className="flex items-center space-x-2">
+                      <Avatar className="h-10 w-10 border-2 border-white">
+                        <AvatarImage src={video.userAvatar} />
+                        <AvatarFallback>{video.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-bold">{video.username}</div>
+                        <div className="text-sm opacity-80">Chef & Food Creator</div>
+                      </div>
+                    </Link>
                     <Button 
                       variant={video.isFollowing ? "default" : "outline"} 
                       size="sm"

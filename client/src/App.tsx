@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import VideoFeed from "./pages/VideoFeed";
 import UploadVideo from "./pages/UploadVideo";
+import UserProfile from "./pages/UserProfile";
 import MenuBuilder from "./pages/MenuBuilder";
 import Recipes from "./pages/Recipes";
 import Recommendations from "./pages/Recommendations";
@@ -24,6 +25,8 @@ function Router() {
       <Route path="/recipes" component={Recipes} />
       <Route path="/recommendations" component={Recommendations} />
       <Route path="/community" component={Community} />
+      <Route path="/profile/:username" component={UserProfile} />
+      <Route path="/profile" component={UserProfile} />
       <Route component={NotFound} />
     </Switch>
   );

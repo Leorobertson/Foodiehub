@@ -13,7 +13,7 @@ export default function Navbar() {
     { name: "Explore", icon: <Search className="h-5 w-5" />, path: "/home" },
     { name: "Menu Builder", icon: <Utensils className="h-5 w-5" />, path: "/menu-builder" },
     { name: "Recipes", icon: <Heart className="h-5 w-5" />, path: "/recipes" },
-    { name: "Profile", icon: <User className="h-5 w-5" />, path: "/community" },
+    { name: "Profile", icon: <User className="h-5 w-5" />, path: "/profile/masterchef" },
   ];
 
   return (
@@ -64,10 +64,12 @@ export default function Navbar() {
               </Link>
             </Button>
             
-            <Avatar className="h-8 w-8 cursor-pointer">
-              <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=user1" />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
+            <Link href="/profile/masterchef">
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage src="https://api.dicebear.com/7.x/adventurer/svg?seed=user1" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            </Link>
             
             {/* Mobile menu button */}
             <div className="md:hidden">
